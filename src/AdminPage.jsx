@@ -10,9 +10,12 @@ export default function AdminPage() {
   const [yachts, setYachts] = useState([])
   const [charters, setCharters] = useState([])
   const [newYachtName, setNewYachtName] = useState('')
+  const [newYachtPassword, setNewYachtPassword] = useState('')
   const [newCharterName, setNewCharterName] = useState('')
   const [selectedYacht, setSelectedYacht] = useState(null)
   const [creating, setCreating] = useState(false)
+  const [editingPassword, setEditingPassword] = useState(null)
+  const [newCrewPassword, setNewCrewPassword] = useState('')
 
   const login = async () => {
     const { data } = await supabase.from('admins').select('*').eq('password', password).single()
@@ -36,10 +39,21 @@ export default function AdminPage() {
   const createYacht = async () => {
     if (!newYachtName.trim()) return
     setCreating(true)
-    await supabase.from('yachts').insert({ name: newYachtName.trim(), agency_id: admin.id })
+    await supabase.from('yachts').insert({ 
+      name: newYachtName.trim(), 
+      agency_id: admin.id,
+      crew_password: newYachtPassword.trim() || 'crew2026'
+    })
     setNewYachtName('')
+    setNewYachtPassword('')
     await fetchYachts()
     setCreating(false)
+  }
+
+  const updateCrewPassword = async (yachtId, pwd) => {
+    await supabase.from('yachts').update({ crew_password: pwd }).eq('id', yachtId)
+    setEditingPassword(null)
+    await fetchYachts()
   }
 
   const createCharter = async () => {
@@ -78,7 +92,7 @@ export default function AdminPage() {
     return (
       <>
         <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
-        <nav><div className="brand">The galley</div></nav>
+        <nav><div className="brand">The Galley</div></nav>
         <main style={{display:'flex',alignItems:'center',justifyContent:'center',minHeight:'60vh'}}>
           <div style={{width:'100%',maxWidth:'360px'}}>
             <div className="page-header" style={{textAlign:'center'}}>
@@ -101,7 +115,7 @@ export default function AdminPage() {
     <>
       <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
       <nav>
-        <div className="brand">The galley</div>
+        <div className="brand">The Galley</div>
         <div style={{fontSize:'12px',color:'rgba(255,255,255,0.5)',letterSpacing:'.08em'}}>{admin?.agency}</div>
       </nav>
       <main>
@@ -112,10 +126,15 @@ export default function AdminPage() {
 
         <div className="section">
           <div className="section-label">Add a Yacht</div>
-          <div className="tag-row">
-            <input placeholder="e.g. Lady Stephanie" value={newYachtName} onChange={e => setNewYachtName(e.target.value)} onKeyDown={e => e.key === 'Enter' && createYacht()}/>
-            <button className="btn-add" onClick={createYacht} disabled={creating}>+</button>
+          <div className="field">
+            <label>Yacht name</label>
+            <input placeholder="e.g. Lady Stephanie" value={newYachtName} onChange={e => setNewYachtName(e.target.value)}/>
           </div>
+          <div className="field">
+            <label>Crew password</label>
+            <input placeholder="e.g. ladystephanie2026" value={newYachtPassword} onChange={e => setNewYachtPassword(e.target.value)} onKeyDown={e => e.key === 'Enter' && createYacht()}/>
+          </div>
+          <button className="btn-add" onClick={createYacht} disabled={creating} style={{width:'100%',padding:'12px',fontSize:'20px'}}>+</button>
         </div>
 
         <div className="section">
@@ -125,14 +144,33 @@ export default function AdminPage() {
           ) : (
             yachts.map(y => (
               <div key={y.id} style={{background:'#fff',border:`1px solid ${selectedYacht?.id===y.id ? 'var(--accent)' : 'var(--border)'}`,borderRadius:'2px',padding:'16px 20px',marginBottom:'8px'}}>
-                <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:'8px'}}>
+                <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:'12px'}}>
                   <div onClick={() => { setSelectedYacht(y); refreshCharters(y.id) }} style={{fontFamily:'Cormorant Garamond, serif',fontSize:'20px',fontWeight:300,cursor:'pointer'}}>{y.name}</div>
                   <button onClick={() => deleteYacht(y.id)} style={{fontSize:'11px',padding:'3px 10px',background:'transparent',color:'var(--danger)',border:'1px solid var(--danger)',borderRadius:'2px',cursor:'pointer'}}>Delete</button>
                 </div>
-                <div style={{fontSize:'11px',color:'var(--muted)',marginBottom:'4px'}}>Permanent crew link:</div>
-                <div style={{display:'flex',alignItems:'center',gap:'8px'}}>
-                  <div style={{fontSize:'12px',color:'var(--ink)',wordBreak:'break-all'}}>{baseUrl}/crew/{y.crew_token}</div>
-                  <button onClick={() => navigator.clipboard.writeText(`${baseUrl}/crew/${y.crew_token}`)} style={{fontSize:'11px',padding:'3px 8px',background:'var(--accent)',color:'#fff',border:'none',borderRadius:'2px',cursor:'pointer',flexShrink:0}}>Copy</button>
+
+                <div style={{marginBottom:'8px'}}>
+                  <div style={{fontSize:'11px',color:'var(--muted)',marginBottom:'4px'}}>Permanent crew link:</div>
+                  <div style={{display:'flex',alignItems:'center',gap:'8px'}}>
+                    <div style={{fontSize:'12px',color:'var(--ink)',wordBreak:'break-all'}}>{baseUrl}/crew/{y.crew_token}</div>
+                    <button onClick={() => navigator.clipboard.writeText(`${baseUrl}/crew/${y.crew_token}`)} style={{fontSize:'11px',padding:'3px 8px',background:'var(--accent)',color:'#fff',border:'none',borderRadius:'2px',cursor:'pointer',flexShrink:0}}>Copy</button>
+                  </div>
+                </div>
+
+                <div style={{background:'var(--accent-light)',borderRadius:'2px',padding:'10px 12px'}}>
+                  <div style={{fontSize:'11px',color:'var(--accent)',fontWeight:500,marginBottom:'6px',letterSpacing:'.06em',textTransform:'uppercase'}}>Crew Password</div>
+                  {editingPassword === y.id ? (
+                    <div style={{display:'flex',gap:'6px'}}>
+                      <input value={newCrewPassword} onChange={e => setNewCrewPassword(e.target.value)} style={{flex:1,padding:'6px 10px',fontSize:'12px',border:'1px solid var(--border)',borderRadius:'2px',outline:'none'}}/>
+                      <button onClick={() => updateCrewPassword(y.id, newCrewPassword)} style={{fontSize:'11px',padding:'4px 10px',background:'var(--accent)',color:'#fff',border:'none',borderRadius:'2px',cursor:'pointer'}}>Save</button>
+                      <button onClick={() => setEditingPassword(null)} style={{fontSize:'11px',padding:'4px 10px',background:'transparent',color:'var(--muted)',border:'1px solid var(--border)',borderRadius:'2px',cursor:'pointer'}}>Cancel</button>
+                    </div>
+                  ) : (
+                    <div style={{display:'flex',alignItems:'center',gap:'8px'}}>
+                      <div style={{fontSize:'13px',fontFamily:'monospace',color:'var(--ink)'}}>{y.crew_password || 'crew2026'}</div>
+                      <button onClick={() => { setEditingPassword(y.id); setNewCrewPassword(y.crew_password || 'crew2026') }} style={{fontSize:'11px',padding:'3px 8px',background:'transparent',color:'var(--accent)',border:'1px solid var(--accent)',borderRadius:'2px',cursor:'pointer'}}>Edit</button>
+                    </div>
+                  )}
                 </div>
               </div>
             ))

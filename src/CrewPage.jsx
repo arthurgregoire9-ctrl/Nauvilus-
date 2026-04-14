@@ -3,11 +3,9 @@ import { useParams } from "react-router-dom"
 import { createClient } from "@supabase/supabase-js"
 const supabase = createClient("https://dmqgbxjnfkjnkpfirfdl.supabase.co","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRtcWdieGpuZmtqbmtwZmlyZmRsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxMDA0NzYsImV4cCI6MjA5MTY3NjQ3Nn0.y16FCg_HXkd7Ua_CU7K2o5Kd-QuEXxbz18hZsj4GaHI")
 
-const CREW_PASSWORD = "arthur"
-
 export default function CrewPage() {
   const { token } = useParams()
-  const [unlocked, setUnlocked] = useState(localStorage.getItem('crewAuth') === 'true')
+  const [unlocked, setUnlocked] = useState(false)
   const [passwordInput, setPasswordInput] = useState('')
   const [passwordError, setPasswordError] = useState(false)
   const [apiKey, setApiKey] = useState(localStorage.getItem('apiKey') || '')
@@ -26,8 +24,24 @@ export default function CrewPage() {
   }, [messages])
 
   useEffect(() => {
-    if (unlocked) fetchYachtAndGuests()
-  }, [unlocked])
+    // Vérifie si déjà connecté pour ce token
+    const savedAuth = localStorage.getItem(`crewAuth_${token}`)
+    if (savedAuth === 'true') {
+      setUnlocked(true)
+      fetchYachtAndGuests()
+    }
+  }, [token])
+
+  const unlock = async () => {
+    const { data } = await supabase.from('yachts').select('crew_password').eq('crew_token', token).single()
+    if (data && passwordInput === (data.crew_password || 'crew2026')) {
+      localStorage.setItem(`crewAuth_${token}`, 'true')
+      setUnlocked(true)
+      fetchYachtAndGuests()
+    } else {
+      setPasswordError(true)
+    }
+  }
 
   const fetchYachtAndGuests = async () => {
     const { data: yachtData } = await supabase.from('yachts').select('*').eq('crew_token', token).single()
@@ -38,15 +52,6 @@ export default function CrewPage() {
       setActiveCharter(charterData)
       const { data: guestsData } = await supabase.from('guests').select('*').eq('charter_id', charterData.id).eq('archived', false)
       if (guestsData) setAllGuests(guestsData)
-    }
-  }
-
-  const unlock = () => {
-    if (passwordInput === CREW_PASSWORD) {
-      localStorage.setItem('crewAuth', 'true')
-      setUnlocked(true)
-    } else {
-      setPasswordError(true)
     }
   }
 
@@ -71,6 +76,11 @@ export default function CrewPage() {
       p.diets?.length     ? "Dietary requirements: " + p.diets.join(", ") : "",
       p.cuisines?.length  ? "Preferred cuisines: " + p.cuisines.join(", ") : "",
       p.favorites         ? "Favourites: " + p.favorites : "",
+      p.spirits           ? "Spirits: " + p.spirits : "",
+      p.cocktails         ? "Cocktails: " + p.cocktails : "",
+      p.softs             ? "Soft drinks: " + p.softs : "",
+      p.breakfast         ? "Breakfast: " + p.breakfast : "",
+      p.juices            ? "Juices: " + p.juices : "",
       p.notes             ? "Notes: " + p.notes : "",
     ].filter(Boolean).join("\n")).join("\n\n")
     return [
@@ -125,7 +135,7 @@ export default function CrewPage() {
     return (
       <>
         <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
-        <nav><div className="brand">The galley</div></nav>
+        <nav><div className="brand">The Galley</div></nav>
         <main style={{display:'flex',alignItems:'center',justifyContent:'center',minHeight:'60vh'}}>
           <div style={{width:'100%',maxWidth:'360px'}}>
             <div className="page-header" style={{textAlign:'center'}}>
@@ -148,7 +158,7 @@ export default function CrewPage() {
     <>
       <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
       <nav>
-        <div className="brand">The galley</div>
+        <div className="brand">The Galley</div>
         <div style={{display:'flex',alignItems:'center',gap:'16px'}}>
           {yacht && <span style={{fontSize:'12px',color:'rgba(255,255,255,0.5)',letterSpacing:'.08em'}}>{yacht.name}{activeCharter ? ' · ' + activeCharter.name : ''}</span>}
           <input type="password" placeholder="API Key" value={apiKey} onChange={e => { setApiKey(e.target.value); localStorage.setItem('apiKey', e.target.value) }} style={{padding:'6px 10px',fontSize:'12px',borderRadius:'2px',border:'1px solid rgba(255,255,255,0.2)',background:'rgba(255,255,255,0.1)',color:'#fff',outline:'none',width:'160px'}}/>
