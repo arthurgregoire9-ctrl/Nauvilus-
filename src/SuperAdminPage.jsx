@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { createClient } from "@supabase/supabase-js"
 const supabase = createClient("https://dmqgbxjnfkjnkpfirfdl.supabase.co","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRtcWdieGpuZmtqbmtwZmlyZmRsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxMDA0NzYsImV4cCI6MjA5MTY3NjQ3Nn0.y16FCg_HXkd7Ua_CU7K2o5Kd-QuEXxbz18hZsj4GaHI")
 
-const SUPER_PASSWORD = "meridian-super-2026"
+const SUPER_PASSWORD = "arthur"
 
 export default function SuperAdminPage() {
   const [unlocked, setUnlocked] = useState(localStorage.getItem('superAuth') === 'true')
