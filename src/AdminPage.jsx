@@ -5,6 +5,7 @@ const supabase = createClient("https://dmqgbxjnfkjnkpfirfdl.supabase.co","eyJhbG
 export default function AdminPage() {
   const [password, setPassword] = useState('')
   const [unlocked, setUnlocked] = useState(false)
+  const [admin, setAdmin] = useState(null)
   const [error, setError] = useState('')
   const [yachts, setYachts] = useState([])
   const [charters, setCharters] = useState([])
@@ -15,12 +16,13 @@ export default function AdminPage() {
 
   const login = async () => {
     const { data } = await supabase.from('admins').select('*').eq('password', password).single()
-    if (data) { setUnlocked(true); fetchYachts() }
+    if (data) { setAdmin(data); setUnlocked(true); fetchYachts(data.id) }
     else setError('Incorrect password.')
   }
 
-  const fetchYachts = async () => {
-    const { data } = await supabase.from('yachts').select('*').order('created_at', { ascending: false })
+  const fetchYachts = async (agencyId) => {
+    const id = agencyId || admin?.id
+    const { data } = await supabase.from('yachts').select('*').eq('agency_id', id).order('created_at', { ascending: false })
     if (data) setYachts(data)
   }
 
@@ -34,7 +36,7 @@ export default function AdminPage() {
   const createYacht = async () => {
     if (!newYachtName.trim()) return
     setCreating(true)
-    await supabase.from('yachts').insert({ name: newYachtName.trim() })
+    await supabase.from('yachts').insert({ name: newYachtName.trim(), agency_id: admin.id })
     setNewYachtName('')
     await fetchYachts()
     setCreating(false)
@@ -76,7 +78,7 @@ export default function AdminPage() {
     return (
       <>
         <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
-        <nav><div className="brand">Meridian<span>·</span>Preference</div></nav>
+        <nav><div className="brand">The galley</div></nav>
         <main style={{display:'flex',alignItems:'center',justifyContent:'center',minHeight:'60vh'}}>
           <div style={{width:'100%',maxWidth:'360px'}}>
             <div className="page-header" style={{textAlign:'center'}}>
@@ -98,7 +100,10 @@ export default function AdminPage() {
   return (
     <>
       <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
-      <nav><div className="brand">Meridian<span>·</span>Preference</div></nav>
+      <nav>
+        <div className="brand">The galley</div>
+        <div style={{fontSize:'12px',color:'rgba(255,255,255,0.5)',letterSpacing:'.08em'}}>{admin?.agency}</div>
+      </nav>
       <main>
         <div className="page-header">
           <h1>Agency <em>Dashboard</em></h1>

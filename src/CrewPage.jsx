@@ -125,7 +125,7 @@ export default function CrewPage() {
     return (
       <>
         <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
-        <nav><div className="brand">Meridian<span>·</span>Preference</div></nav>
+        <nav><div className="brand">The galley</div></nav>
         <main style={{display:'flex',alignItems:'center',justifyContent:'center',minHeight:'60vh'}}>
           <div style={{width:'100%',maxWidth:'360px'}}>
             <div className="page-header" style={{textAlign:'center'}}>
@@ -148,7 +148,7 @@ export default function CrewPage() {
     <>
       <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
       <nav>
-        <div className="brand">Meridian<span>·</span>Preference</div>
+        <div className="brand">The galley</div>
         <div style={{display:'flex',alignItems:'center',gap:'16px'}}>
           {yacht && <span style={{fontSize:'12px',color:'rgba(255,255,255,0.5)',letterSpacing:'.08em'}}>{yacht.name}{activeCharter ? ' · ' + activeCharter.name : ''}</span>}
           <input type="password" placeholder="API Key" value={apiKey} onChange={e => { setApiKey(e.target.value); localStorage.setItem('apiKey', e.target.value) }} style={{padding:'6px 10px',fontSize:'12px',borderRadius:'2px',border:'1px solid rgba(255,255,255,0.2)',background:'rgba(255,255,255,0.1)',color:'#fff',outline:'none',width:'160px'}}/>

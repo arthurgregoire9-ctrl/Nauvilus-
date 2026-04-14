@@ -369,7 +369,7 @@ export default function GuestPage() {
   if (notFound) return (
     <>
       <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
-      <nav><div className="brand">Meridian<span>·</span>Preference</div></nav>
+      <nav><div className="brand">The galley</div></nav>
       <main style={{textAlign:'center',paddingTop:'80px'}}>
         <h1 style={{fontFamily:'Cormorant Garamond, serif',fontWeight:300}}>{t.notFound}</h1>
         <p style={{color:'var(--muted)',marginTop:'12px'}}>{t.notFoundMsg}</p>
@@ -380,7 +380,7 @@ export default function GuestPage() {
   if (!charter) return (
     <>
       <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
-      <nav><div className="brand">Meridian<span>·</span>Preference</div></nav>
+      <nav><div className="brand">The galley</div></nav>
       <main style={{textAlign:'center',paddingTop:'80px'}}>
         <p style={{color:'var(--muted)'}}>{t.loading}</p>
       </main>
@@ -391,7 +391,7 @@ export default function GuestPage() {
     <>
       <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
       <nav>
-        <div className="brand">Meridian<span>·</span>Preference</div>
+        <div className="brand">The galley</div>
         <div style={{display:'flex',gap:'6px'}}>
           {Object.entries(TRANSLATIONS).map(([code, val]) => (
             <button key={code} onClick={() => setLang(code)} style={{background: lang===code ? '#fff' : 'transparent',border:'none',borderRadius:'4px',padding:'4px 8px',cursor:'pointer',fontSize:'18px',opacity: lang===code ? 1 : 0.5}}>
