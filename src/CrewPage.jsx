@@ -1,14 +1,15 @@
 import { useState, useRef, useEffect } from "react"
 import { useParams } from "react-router-dom"
 import { createClient } from "@supabase/supabase-js"
+
 const supabase = createClient("https://dmqgbxjnfkjnkpfirfdl.supabase.co","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRtcWdieGpuZmtqbmtwZmlyZmRsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxMDA0NzYsImV4cCI6MjA5MTY3NjQ3Nn0.y16FCg_HXkd7Ua_CU7K2o5Kd-QuEXxbz18hZsj4GaHI")
+const ANTHROPIC_KEY = "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"
 
 export default function CrewPage() {
   const { token } = useParams()
   const [unlocked, setUnlocked] = useState(false)
   const [passwordInput, setPasswordInput] = useState('')
   const [passwordError, setPasswordError] = useState(false)
-  const [apiKey, setApiKey] = useState(localStorage.getItem('apiKey') || '')
   const [yacht, setYacht] = useState(null)
   const [activeCharter, setActiveCharter] = useState(null)
   const [allGuests, setAllGuests] = useState([])
@@ -24,7 +25,6 @@ export default function CrewPage() {
   }, [messages])
 
   useEffect(() => {
-    // Vérifie si déjà connecté pour ce token
     const savedAuth = localStorage.getItem(`crewAuth_${token}`)
     if (savedAuth === 'true') {
       setUnlocked(true)
@@ -105,7 +105,7 @@ export default function CrewPage() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-api-key": apiKey,
+          "x-api-key": ANTHROPIC_KEY,
           "anthropic-version": "2023-06-01",
           "anthropic-dangerous-direct-browser-access": "true"
         },
@@ -159,10 +159,7 @@ export default function CrewPage() {
       <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
       <nav>
         <div className="brand">The Galley</div>
-        <div style={{display:'flex',alignItems:'center',gap:'16px'}}>
-          {yacht && <span style={{fontSize:'12px',color:'rgba(255,255,255,0.5)',letterSpacing:'.08em'}}>{yacht.name}{activeCharter ? ' · ' + activeCharter.name : ''}</span>}
-          <input type="password" placeholder="API Key" value={apiKey} onChange={e => { setApiKey(e.target.value); localStorage.setItem('apiKey', e.target.value) }} style={{padding:'6px 10px',fontSize:'12px',borderRadius:'2px',border:'1px solid rgba(255,255,255,0.2)',background:'rgba(255,255,255,0.1)',color:'#fff',outline:'none',width:'160px'}}/>
-        </div>
+        {yacht && <span style={{fontSize:'12px',color:'rgba(255,255,255,0.5)',letterSpacing:'.08em'}}>{yacht.name}{activeCharter ? ' · ' + activeCharter.name : ''}</span>}
       </nav>
 
       <main>
