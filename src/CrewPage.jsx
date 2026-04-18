@@ -141,14 +141,17 @@ export default function CrewPage() {
  const cleanText = (text) => {
   return text
     .replace(/\[APPROVED\]|\[NOT RECOMMENDED\]|\[ADJUST\]/g, '')
-    .replace(/#{1,3} (.+)/g, '<strong>$1</strong>')
+    .replace(/^### (.+)$/gm, '<h4 style="font-family:Cormorant Garamond,serif;font-size:18px;font-weight:400;margin:20px 0 8px;color:#1a3a5c;">$1</h4>')
+    .replace(/^## (.+)$/gm, '<h3 style="font-family:Cormorant Garamond,serif;font-size:20px;font-weight:400;margin:24px 0 10px;color:#1a3a5c;border-bottom:1px solid #e8e0d5;padding-bottom:6px;">$1</h3>')
+    .replace(/^# (.+)$/gm, '<h2 style="font-family:Cormorant Garamond,serif;font-size:24px;font-weight:300;margin:28px 0 12px;color:#1a3a5c;">$1</h2>')
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    .replace(/^- (.+)/gm, '• $1')
-    .replace(/^---$/gm, '')
+    .replace(/^- (.+)$/gm, '<div style="display:flex;gap:10px;margin:4px 0;"><span style="color:#1a3a5c;flex-shrink:0;">—</span><span>$1</span></div>')
+    .replace(/^• (.+)$/gm, '<div style="display:flex;gap:10px;margin:4px 0;"><span style="color:#1a3a5c;flex-shrink:0;">—</span><span>$1</span></div>')
+    .replace(/^---$/gm, '<hr style="border:none;border-top:1px solid #e8e0d5;margin:16px 0;"/>')
+    .replace(/\n\n/g, '<div style="margin-top:12px;"></div>')
     .trim()
 }
-
   if (!unlocked) {
     return (
       <>
@@ -242,7 +245,7 @@ export default function CrewPage() {
                       <div className="avatar">{msg.role==='user' ? '👨‍🍳' : '🤖'}</div>
                       <div className="bubble">
                         {verdict && <div className={`verdict ${verdict.cls}`}>{verdict.label}</div>}
-                        <div dangerouslySetInnerHTML={{__html: msg.role==='ai' ? cleanText(msg.text) : msg.text}}/>
+                      <div dangerouslySetInnerHTML={{__html: msg.role==='ai' ? cleanText(msg.text) : msg.text}}/> 
                       </div>
                     </div>
                   )
