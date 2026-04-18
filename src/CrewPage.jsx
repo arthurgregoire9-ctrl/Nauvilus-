@@ -4,6 +4,7 @@ import { createClient } from "@supabase/supabase-js"
 
 const supabase = createClient("https://dmqgbxjnfkjnkpfirfdl.supabase.co","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRtcWdieGpuZmtqbmtwZmlyZmRsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxMDA0NzYsImV4cCI6MjA5MTY3NjQ3Nn0.y16FCg_HXkd7Ua_CU7K2o5Kd-QuEXxbz18hZsj4GaHI")
 const ANTHROPIC_KEY = import.meta.env.VITE_ANTHROPIC_KEY
+
 export default function CrewPage() {
   const { token } = useParams()
   const [unlocked, setUnlocked] = useState(false)
@@ -78,15 +79,24 @@ export default function CrewPage() {
       p.spirits           ? "Spirits: " + p.spirits : "",
       p.cocktails         ? "Cocktails: " + p.cocktails : "",
       p.softs             ? "Soft drinks: " + p.softs : "",
-      p.breakfast         ? "Breakfast: " + p.breakfast : "",
+      p.breakfast         ? "Breakfast preferences: " + p.breakfast : "",
+      p.breakfast_time    ? "Breakfast time: " + p.breakfast_time : "",
+      p.lunch_time        ? "Lunch time: " + p.lunch_time : "",
+      p.dinner_time       ? "Dinner time: " + p.dinner_time : "",
       p.juices            ? "Juices: " + p.juices : "",
       p.notes             ? "Notes: " + p.notes : "",
     ].filter(Boolean).join("\n")).join("\n\n")
     return [
       "You are the private chef assistant aboard an ultra-luxury superyacht.",
-      selectedGuests.length > 1 ? "Analyse every dish idea against ALL guest profiles below. Flag any conflict for any guest." : "Analyse every dish idea against the guest profile below.",
-      "", profiles, "",
-      "FORMAT: Always open with [APPROVED], [NOT RECOMMENDED] or [ADJUST]. If multiple guests, mention each guest by name when relevant. 3-4 sentences maximum."
+      "Your role is to help the chef plan meals that work for the ENTIRE TABLE.",
+      "",
+      selectedGuests.length > 1
+        ? "CRITICAL RULE: When multiple guests are selected, ALWAYS suggest ONE single dish that works for the whole table. Never propose different dishes per guest — a yacht chef cooks one meal for everyone. Identify the common ground between all guest profiles and build from there. If there are conflicts, suggest minor adaptations (e.g. sauce on the side, garnish omitted, alternative protein for one guest) while keeping the same core dish for all. Always flag critical allergies by guest name."
+        : "Analyse the dish idea against this guest profile.",
+      "",
+      profiles,
+      "",
+      "FORMAT: Always open with [APPROVED], [NOT RECOMMENDED] or [ADJUST]. Then explain your reasoning in 3-4 sentences maximum. If multiple guests, always think in terms of one unified dish with minor individual adaptations where needed.",
     ].join("\n")
   }
 
@@ -128,7 +138,16 @@ export default function CrewPage() {
     return null
   }
 
-  const cleanText = (text) => text.replace(/\[APPROVED\]|\[NOT RECOMMENDED\]|\[ADJUST\]/g, '').trim()
+ const cleanText = (text) => {
+  return text
+    .replace(/\[APPROVED\]|\[NOT RECOMMENDED\]|\[ADJUST\]/g, '')
+    .replace(/#{1,3} (.+)/g, '<strong>$1</strong>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/^- (.+)/gm, '• $1')
+    .replace(/^---$/gm, '')
+    .trim()
+}
 
   if (!unlocked) {
     return (
@@ -223,7 +242,7 @@ export default function CrewPage() {
                       <div className="avatar">{msg.role==='user' ? '👨‍🍳' : '🤖'}</div>
                       <div className="bubble">
                         {verdict && <div className={`verdict ${verdict.cls}`}>{verdict.label}</div>}
-                        <div>{msg.role==='ai' ? cleanText(msg.text) : msg.text}</div>
+                        <div dangerouslySetInnerHTML={{__html: msg.role==='ai' ? cleanText(msg.text) : msg.text}}/>
                       </div>
                     </div>
                   )
