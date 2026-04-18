@@ -8,7 +8,7 @@ const TRANSLATIONS = {
     flag: '🇬🇧',
     title: 'Your', titleItalic: 'culinary', titleEnd: 'preferences',
     subtitle: 'This information allows our private chef to personalise every dining experience exclusively for you.',
-    steps: ['Profile', 'Restrictions', 'Tastes', 'Morning'],
+    steps: ['Profile', 'Restrictions', 'Tastes', 'Dining'],
     returning: 'Returning guest?',
     emailPlaceholder: 'Enter your email to retrieve your profile',
     profileFound: '✓ Profile found — your preferences have been loaded.',
@@ -23,6 +23,10 @@ const TRANSLATIONS = {
     spirits: 'Favourite Spirits', spiritsPlaceholder: 'e.g. Macallan 18, Grey Goose, Don Julio 1942',
     cocktails: 'Favourite Cocktails', cocktailsPlaceholder: 'e.g. Negroni, Mojito, Aperol Spritz',
     softs: 'Soft Drinks', softsPlaceholder: 'e.g. San Pellegrino, Fever-Tree Ginger Beer',
+    mealTimes: 'Preferred Meal Times',
+    breakfastTime: 'Breakfast',
+    lunchTime: 'Lunch',
+    dinnerTime: 'Dinner',
     breakfast: 'Breakfast Preferences', breakfastPlaceholder: 'e.g. Eggs Benedict, fresh fruit, granola',
     juices: 'Favourite Juices', juicesPlaceholder: 'e.g. Fresh orange, green juice, watermelon',
     notes: 'Additional Notes', notesPlaceholder: 'e.g. Lighter meals at lunch, no red meat in the evening',
@@ -39,7 +43,7 @@ const TRANSLATIONS = {
     flag: '🇫🇷',
     title: 'Vos', titleItalic: 'préférences', titleEnd: 'culinaires',
     subtitle: 'Ces informations permettent à notre chef privé de personnaliser chaque repas exclusivement pour vous.',
-    steps: ['Profil', 'Restrictions', 'Goûts', 'Matin'],
+    steps: ['Profil', 'Restrictions', 'Goûts', 'Repas'],
     returning: 'Déjà client ?',
     emailPlaceholder: 'Entrez votre email pour retrouver votre profil',
     profileFound: '✓ Profil trouvé — vos préférences ont été chargées.',
@@ -54,7 +58,11 @@ const TRANSLATIONS = {
     spirits: 'Alcools forts préférés', spiritsPlaceholder: 'ex. Macallan 18, Grey Goose, Don Julio 1942',
     cocktails: 'Cocktails préférés', cocktailsPlaceholder: 'ex. Negroni, Mojito, Aperol Spritz',
     softs: 'Boissons sans alcool', softsPlaceholder: 'ex. San Pellegrino, Fever-Tree Ginger Beer',
-    breakfast: 'Petit-déjeuner préféré', breakfastPlaceholder: 'ex. Oeufs Benedict, fruits frais, granola',
+    mealTimes: 'Horaires des repas',
+    breakfastTime: 'Petit-déjeuner',
+    lunchTime: 'Déjeuner',
+    dinnerTime: 'Dîner',
+    breakfast: 'Préférences petit-déjeuner', breakfastPlaceholder: 'ex. Oeufs Benedict, fruits frais, granola',
     juices: 'Jus préférés', juicesPlaceholder: 'ex. Orange pressée, jus vert, pastèque',
     notes: 'Notes supplémentaires', notesPlaceholder: 'ex. Repas légers le midi, pas de viande rouge le soir',
     next: 'Continuer', back: 'Retour', submit: 'Envoyer à l equipage',
@@ -70,7 +78,7 @@ const TRANSLATIONS = {
     flag: '🇮🇹',
     title: 'Le tue', titleItalic: 'preferenze', titleEnd: 'culinarie',
     subtitle: 'Queste informazioni permettono al nostro chef privato di personalizzare ogni esperienza culinaria esclusivamente per te.',
-    steps: ['Profilo', 'Restrizioni', 'Gusti', 'Mattino'],
+    steps: ['Profilo', 'Restrizioni', 'Gusti', 'Pasti'],
     returning: 'Già cliente?',
     emailPlaceholder: 'Inserisci la tua email per recuperare il tuo profilo',
     profileFound: '✓ Profilo trovato — le tue preferenze sono state caricate.',
@@ -85,7 +93,11 @@ const TRANSLATIONS = {
     spirits: 'Superalcolici preferiti', spiritsPlaceholder: 'es. Macallan 18, Grey Goose, Don Julio 1942',
     cocktails: 'Cocktail preferiti', cocktailsPlaceholder: 'es. Negroni, Mojito, Aperol Spritz',
     softs: 'Bevande analcoliche', softsPlaceholder: 'es. San Pellegrino, Fever-Tree Ginger Beer',
-    breakfast: 'Colazione preferita', breakfastPlaceholder: 'es. Uova Benedict, frutta fresca, granola',
+    mealTimes: 'Orari dei pasti preferiti',
+    breakfastTime: 'Colazione',
+    lunchTime: 'Pranzo',
+    dinnerTime: 'Cena',
+    breakfast: 'Preferenze colazione', breakfastPlaceholder: 'es. Uova Benedict, frutta fresca, granola',
     juices: 'Succhi preferiti', juicesPlaceholder: 'es. Arancia fresca, succo verde, anguria',
     notes: 'Note aggiuntive', notesPlaceholder: 'es. Pasti leggeri a pranzo, niente carne rossa la sera',
     next: 'Continua', back: 'Indietro', submit: 'Invia all equipaggio',
@@ -101,7 +113,7 @@ const TRANSLATIONS = {
     flag: '🇷🇺',
     title: 'Ваши', titleItalic: 'кулинарные', titleEnd: 'предпочтения',
     subtitle: 'Эта информация позволяет нашему личному шеф-повару персонализировать каждый приём пищи исключительно для вас.',
-    steps: ['Профиль', 'Ограничения', 'Вкусы', 'Утро'],
+    steps: ['Профиль', 'Ограничения', 'Вкусы', 'Питание'],
     returning: 'Уже были у нас?',
     emailPlaceholder: 'Введите email для загрузки вашего профиля',
     profileFound: '✓ Профиль найден — ваши предпочтения загружены.',
@@ -116,6 +128,10 @@ const TRANSLATIONS = {
     spirits: 'Крепкие напитки', spiritsPlaceholder: 'напр. Macallan 18, Grey Goose, Don Julio 1942',
     cocktails: 'Любимые коктейли', cocktailsPlaceholder: 'напр. Негрони, Мохито, Апероль Шприц',
     softs: 'Безалкогольные напитки', softsPlaceholder: 'напр. San Pellegrino, Fever-Tree Ginger Beer',
+    mealTimes: 'Предпочтительное время приёма пищи',
+    breakfastTime: 'Завтрак',
+    lunchTime: 'Обед',
+    dinnerTime: 'Ужин',
     breakfast: 'Предпочтения по завтраку', breakfastPlaceholder: 'напр. Яйца Бенедикт, свежие фрукты, гранола',
     juices: 'Любимые соки', juicesPlaceholder: 'напр. Свежий апельсин, зелёный сок, арбуз',
     notes: 'Дополнительные заметки', notesPlaceholder: 'напр. Лёгкие блюда на обед, без красного мяса вечером',
@@ -130,7 +146,32 @@ const TRANSLATIONS = {
   }
 }
 
-const emptyGuest = () => ({ name:'', email:'', allergies:[], dislikes:[], diets:[], cuisines:[], favorites:'', spirits:'', cocktails:'', softs:'', breakfast:'', juices:'', notes:'' })
+const emptyGuest = () => ({ name:'', email:'', allergies:[], dislikes:[], diets:[], cuisines:[], favorites:'', spirits:'', cocktails:'', softs:'', breakfast:'', juices:'', notes:'', breakfast_time:'08:00', lunch_time:'13:00', dinner_time:'20:00' })
+
+function TimeSelector({ label, value, onChange }) {
+  const hours = Array.from({length: 24}, (_, i) => i)
+  const minutes = ['00', '15', '30', '45']
+  const [hour, setHour] = useState(value ? parseInt(value.split(':')[0]) : 8)
+  const [minute, setMinute] = useState(value ? value.split(':')[1] : '00')
+
+  const update = (h, m) => onChange(`${String(h).padStart(2,'0')}:${m}`)
+
+  return (
+    <div style={{marginBottom:'16px'}}>
+      <div style={{fontSize:'10px',fontWeight:'500',letterSpacing:'.14em',textTransform:'uppercase',color:'var(--muted)',marginBottom:'8px'}}>{label}</div>
+      <div style={{display:'flex',alignItems:'center',gap:'4px',background:'#fff',border:'1px solid var(--border)',borderRadius:'2px',padding:'10px 16px',width:'fit-content'}}>
+        <select value={hour} onChange={e => { const h=parseInt(e.target.value); setHour(h); update(h,minute) }} style={{border:'none',outline:'none',fontSize:'28px',fontFamily:'Cormorant Garamond,serif',fontWeight:300,color:'var(--ink)',background:'transparent',cursor:'pointer',WebkitAppearance:'none',appearance:'none',textAlign:'center',width:'52px'}}>
+          {hours.map(h => <option key={h} value={h}>{String(h).padStart(2,'0')}</option>)}
+        </select>
+        <span style={{fontSize:'28px',fontFamily:'Cormorant Garamond,serif',color:'var(--muted)',margin:'0 2px'}}>:</span>
+        <select value={minute} onChange={e => { const m=e.target.value; setMinute(m); update(hour,m) }} style={{border:'none',outline:'none',fontSize:'28px',fontFamily:'Cormorant Garamond,serif',fontWeight:300,color:'var(--ink)',background:'transparent',cursor:'pointer',WebkitAppearance:'none',appearance:'none',textAlign:'center',width:'52px'}}>
+          {minutes.map(m => <option key={m} value={m}>{m}</option>)}
+        </select>
+        <span style={{fontSize:'13px',color:'var(--muted)',marginLeft:'10px',fontWeight:500}}>{hour < 12 ? 'AM' : 'PM'}</span>
+      </div>
+    </div>
+  )
+}
 
 function StepIndicator({ current, total, labels }) {
   return (
@@ -247,6 +288,12 @@ function GuestForm({ guest, onChange, t, onSubmit, step, setStep }) {
 
     <div key="s4" style={{animation:'fadeSlide .4s ease'}}>
       <div className="section">
+        <div className="section-label">{t.mealTimes}</div>
+        <TimeSelector label={t.breakfastTime} value={guest.breakfast_time||'08:00'} onChange={v => onChange({ ...guest, breakfast_time: v })}/>
+        <TimeSelector label={t.lunchTime} value={guest.lunch_time||'13:00'} onChange={v => onChange({ ...guest, lunch_time: v })}/>
+        <TimeSelector label={t.dinnerTime} value={guest.dinner_time||'20:00'} onChange={v => onChange({ ...guest, dinner_time: v })}/>
+      </div>
+      <div className="section">
         <div className="section-label">{t.breakfast}</div>
         <div className="field"><textarea placeholder={t.breakfastPlaceholder} value={guest.breakfast||''} onChange={e => onChange({ ...guest, breakfast: e.target.value })}/></div>
       </div>
@@ -294,9 +341,6 @@ export default function GuestPage() {
   const [activeGuest, setActiveGuest] = useState(0)
   const [step, setStep] = useState(0)
   const [submitted, setSubmitted] = useState(false)
- useEffect(() => {
-  setStep(0)
-}, [activeGuest])
   const t = TRANSLATIONS[lang]
 
   useEffect(() => {
@@ -307,6 +351,10 @@ export default function GuestPage() {
     }
     fetchCharter()
   }, [token])
+
+  useEffect(() => {
+    setStep(0)
+  }, [activeGuest])
 
   const addGuest = () => {
     setGuests([...guests, emptyGuest()])
@@ -344,6 +392,9 @@ export default function GuestPage() {
         breakfast: guest.breakfast,
         juices: guest.juices,
         notes: guest.notes,
+        breakfast_time: guest.breakfast_time,
+        lunch_time: guest.lunch_time,
+        dinner_time: guest.dinner_time,
         charter_id: charter.id,
         archived: false
       }, { onConflict: 'email' })
@@ -402,7 +453,7 @@ export default function GuestPage() {
 
             <div style={{display:'flex',gap:'8px',marginBottom:'40px',flexWrap:'wrap'}}>
               {guests.map((g, i) => (
-                <div key={i} onClick={() => { setStep(0); setActiveGuest(i) }} style={{padding:'7px 16px',cursor:'pointer',borderRadius:'20px',border:`1px solid ${activeGuest===i ? 'var(--accent)' : 'var(--border)'}`,background: activeGuest===i ? 'var(--accent)' : '#fff',color: activeGuest===i ? '#fff' : 'var(--muted)',fontSize:'12px',fontWeight:'500',display:'flex',alignItems:'center',gap:'8px',transition:'all .2s'}}>
+                <div key={i} onClick={() => setActiveGuest(i)} style={{padding:'7px 16px',cursor:'pointer',borderRadius:'20px',border:`1px solid ${activeGuest===i ? 'var(--accent)' : 'var(--border)'}`,background: activeGuest===i ? 'var(--accent)' : '#fff',color: activeGuest===i ? '#fff' : 'var(--muted)',fontSize:'12px',fontWeight:'500',display:'flex',alignItems:'center',gap:'8px',transition:'all .2s'}}>
                   {g.name || `Guest ${i+1}`}
                   {guests.length > 1 && <span onClick={e => { e.stopPropagation(); removeGuest(i) }} style={{opacity:.6,cursor:'pointer',fontSize:'14px'}}>×</span>}
                 </div>
@@ -412,16 +463,15 @@ export default function GuestPage() {
               </button>
             </div>
 
-           <GuestForm
-  key={activeGuest}
-  guest={guests[activeGuest]}
-  onChange={data => updateGuest(activeGuest, data)}
-  t={t}
-  onSubmit={submitAll}
-  step={step}
-  setStep={setStep}
-/>
-            
+            <GuestForm
+              key={activeGuest}
+              guest={guests[activeGuest]}
+              onChange={data => updateGuest(activeGuest, data)}
+              t={t}
+              onSubmit={submitAll}
+              step={step}
+              setStep={setStep}
+            />
           </div>
         ) : (
           <div style={{paddingTop:'80px',textAlign:'center'}}>
