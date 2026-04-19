@@ -36,7 +36,7 @@ export default function LandingPage() {
       <div className="landing">
         <div className="landing-hero">
           <Logo size={36} light={true}/>
-          <p className="landing-tagline">The preference platform for luxury yacht charters</p>
+          <p className="landing-tagline">Guest preferences, perfected.</p>
 
           <div className="landing-cards">
             <div className="landing-card" onClick={() => navigate('/admin')}>
