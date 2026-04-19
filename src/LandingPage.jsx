@@ -15,7 +15,21 @@ export default function LandingPage() {
       <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
       <style>{`
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        .landing { min-height: 100vh; background: #0f2338; display: flex; flex-direction: column; }
+       .landing { 
+  min-height: 100vh; 
+  background: linear-gradient(170deg, #0a1f35 0%, #1a3a5c 50%, #0d2440 100%);
+  display: flex; 
+  flex-direction: column;
+  position: relative;
+}
+.landing::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  opacity: 0.4;
+  pointer-events: none;
+}
         .landing-hero { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px 24px; }
         .landing-tagline { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 300; letter-spacing: .2em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-top: 32px; margin-bottom: 80px; }
         .landing-cards { display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; width: 100%; max-width: 620px; }
