@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { supabase } from "./supabase.js"
+
 export default function AdminPage() {
   const [password, setPassword] = useState('')
   const [unlocked, setUnlocked] = useState(false)
@@ -15,45 +15,54 @@ export default function AdminPage() {
   const [editingPassword, setEditingPassword] = useState(null)
   const [newCrewPassword, setNewCrewPassword] = useState('')
 
- const login = async () => {
-  try {
-    const res = await fetch('/api/admin-login', {
+  const callAdmin = async (action, payload = {}, overrideAdminId) => {
+    const res = await fetch('/api/admin', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password })
+      body: JSON.stringify({ action, adminId: overrideAdminId || admin?.id, payload })
     })
-    const result = await res.json()
-    if (res.ok && result.admin) {
-      setAdmin(result.admin)
-      setUnlocked(true)
-      fetchYachts(result.admin.id)
-    } else {
-      setError('Incorrect password.')
-    }
-  } catch (err) {
-    setError('Connection error.')
+    return res.json()
   }
-}
+
+  const login = async () => {
+    try {
+      const res = await fetch('/api/admin-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password })
+      })
+      const result = await res.json()
+      if (res.ok && result.admin) {
+        setAdmin(result.admin)
+        setUnlocked(true)
+        fetchYachts(result.admin.id)
+      } else {
+        setError('Incorrect password.')
+      }
+    } catch (err) {
+      setError('Connection error.')
+    }
+  }
 
   const fetchYachts = async (agencyId) => {
     const id = agencyId || admin?.id
-    const { data } = await supabase.from('yachts').select('*').eq('agency_id', id).order('created_at', { ascending: false })
-    if (data) setYachts(data)
+    if (!id) return
+    const result = await callAdmin('list_yachts', {}, id)
+    if (result.data) setYachts(result.data)
   }
 
   const refreshCharters = async (yachtId) => {
     const id = yachtId || selectedYacht?.id
     if (!id) return
-    const { data } = await supabase.from('charters').select('*').eq('yacht_id', id).order('created_at', { ascending: false })
-    if (data) setCharters(data.filter(c => c.active === true || c.active === null))
+    const result = await callAdmin('list_charters', { yachtId: id })
+    if (result.data) setCharters(result.data.filter(c => c.active === true || c.active === null))
   }
 
   const createYacht = async () => {
     if (!newYachtName.trim()) return
     setCreating(true)
-    await supabase.from('yachts').insert({ 
-      name: newYachtName.trim(), 
-      agency_id: admin.id,
+    await callAdmin('create_yacht', {
+      name: newYachtName.trim(),
       crew_password: newYachtPassword.trim() || 'crew2026'
     })
     setNewYachtName('')
@@ -63,7 +72,7 @@ export default function AdminPage() {
   }
 
   const updateCrewPassword = async (yachtId, pwd) => {
-    await supabase.from('yachts').update({ crew_password: pwd }).eq('id', yachtId)
+    await callAdmin('update_crew_password', { yachtId, password: pwd })
     setEditingPassword(null)
     await fetchYachts()
   }
@@ -71,38 +80,32 @@ export default function AdminPage() {
   const createCharter = async () => {
     if (!newCharterName.trim() || !selectedYacht) return
     setCreating(true)
-    await supabase.from('charters').insert({ name: newCharterName.trim(), yacht_id: selectedYacht.id, active: null })
+    await callAdmin('create_charter', {
+      name: newCharterName.trim(),
+      yachtId: selectedYacht.id
+    })
     setNewCharterName('')
     await refreshCharters()
     setCreating(false)
   }
 
   const setActive = async (charterId) => {
-    await supabase.from('charters').update({ active: null }).eq('yacht_id', selectedYacht.id).neq('id', charterId).is('active', true)
-    await supabase.from('charters').update({ active: true }).eq('id', charterId)
+    await callAdmin('set_active_charter', { yachtId: selectedYacht.id, charterId })
     await refreshCharters()
   }
 
   const endCharter = async (charterId) => {
     if (!window.confirm('End this charter? Guest profiles will be archived.')) return
-    await supabase.from('guests').update({ archived: true }).eq('charter_id', charterId)
-    await supabase.from('charters').update({ active: false }).eq('id', charterId)
+    await callAdmin('end_charter', { charterId })
     await refreshCharters()
   }
 
   const deleteYacht = async (yachtId) => {
-  if (!window.confirm('Delete this yacht? Charters will be deleted but guest profiles will be preserved.')) return
-  const { data: charterData } = await supabase.from('charters').select('id').eq('yacht_id', yachtId)
-  if (charterData) {
-    for (const charter of charterData) {
-      await supabase.from('guests').update({ charter_id: null }).eq('charter_id', charter.id)
-    }
+    if (!window.confirm('Delete this yacht? Charters will be deleted but guest profiles will be preserved.')) return
+    await callAdmin('delete_yacht', { yachtId })
+    if (selectedYacht?.id === yachtId) { setSelectedYacht(null); setCharters([]) }
+    await fetchYachts()
   }
-  await supabase.from('charters').delete().eq('yacht_id', yachtId)
-  await supabase.from('yachts').delete().eq('id', yachtId)
-  if (selectedYacht?.id === yachtId) { setSelectedYacht(null); setCharters([]) }
-  await fetchYachts()
-}
 
   const baseUrl = window.location.origin
 
@@ -111,11 +114,11 @@ export default function AdminPage() {
       <>
         <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
         <nav>
- <svg width="160" height="32" viewBox="0 0 300 60" xmlns="http://www.w3.org/2000/svg">
-  <text x="150" y="38" textAnchor="middle" fontFamily="Cormorant Garamond, Georgia, serif" fontSize="28" fontWeight="300" fill="#ffffff" letterSpacing="8">NAUVILUS</text>
-  <line x1="40" y1="46" x2="260" y2="46" stroke="#c9a96e" strokeWidth="0.8"/>
-</svg>
-</nav>
+          <svg width="160" height="32" viewBox="0 0 300 60" xmlns="http://www.w3.org/2000/svg">
+            <text x="150" y="38" textAnchor="middle" fontFamily="Cormorant Garamond, Georgia, serif" fontSize="28" fontWeight="300" fill="#ffffff" letterSpacing="8">NAUVILUS</text>
+            <line x1="40" y1="46" x2="260" y2="46" stroke="#c9a96e" strokeWidth="0.8"/>
+          </svg>
+        </nav>
         <main style={{display:'flex',alignItems:'center',justifyContent:'center',minHeight:'60vh'}}>
           <div style={{width:'100%',maxWidth:'360px'}}>
             <div className="page-header" style={{textAlign:'center'}}>
